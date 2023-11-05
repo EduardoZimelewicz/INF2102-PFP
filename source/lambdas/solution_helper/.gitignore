@@ -1,0 +1,12 @@
+# exclude python 3rd party modules
+*.dist-info/
+bin
+certifi/
+chardet/
+crhelper/
+idna/
+requests/
+charset_normalizer/
+# crhelper tests directory
+tests/
+urllib3/
