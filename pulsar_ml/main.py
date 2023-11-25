@@ -3,6 +3,7 @@ from pulsar_ml.ml.loader import Loader
 from pulsar_ml.ml.pre_processor import PreProcessor
 from pulsar_ml.ml.model import Model
 from pulsar_ml.ml.evaluator import Evaluator
+import joblib
 
 def main():
     loader = Loader()
@@ -39,5 +40,7 @@ def main():
     print("Accuracy: {}".format(accuracy))
     print("Precision: {}".format(precision))
     print("Recall: {}".format(recall))
+
+    joblib.dump(model,"./model_pulsar.joblib")
 
 main()
