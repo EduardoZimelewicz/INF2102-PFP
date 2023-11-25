@@ -48,17 +48,6 @@ aws s3 cp model.tar.gz s3://<bucket-name>
 }
 ```
 
-{
-"pipeline_type": "byom_realtime_builtin",
-  "model_framework": "sklearn",
-  "model_framework_version": "1.2-1",
-  "model_name": "pulsar",
-  "model_artifact_location": "model.tar.gz",
-  "data_capture_location": "inf2102-mlops-orchestrato-pipelineassets8069ce4301-gtlls1kvsd7a/data",
-  "inference_instance": "ml.m5.large",
-  "endpoint_name": "pulsar"
-}
-
 - Com uma execução com sucesso, o retorno será dessa forma:
 
 ```json
