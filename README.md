@@ -4,7 +4,9 @@ Projeto final de programação para o curso INF2102 - Um orquestrador MLOps de c
 
 Obs: O treinamento do modelo deve ocorrer locamente, fora da infraestrutura gerenciada
 
-Projeato no guia de implementação <https://docs.aws.amazon.com/solutions/latest/mlops-workload-orchestrator/solution-overview.html>
+Tutorial de criação de container para AWS SageMaker MLOps <https://aws.amazon.com/blogs/machine-learning/train-and-host-scikit-learn-models-in-amazon-sagemaker-by-building-a-scikit-docker-container/>
+Projeto exemplo de modelo scikit learn no AWS SageMaker MLOps <https://github.com/aws/amazon-sagemaker-examples/tree/main/advanced_functionality/scikit_bring_your_own>
+Projeto no guia de implementação <https://docs.aws.amazon.com/solutions/latest/mlops-workload-orchestrator/solution-overview.html>
 
 ## Pré-requisitos
 
@@ -17,6 +19,50 @@ Projeato no guia de implementação <https://docs.aws.amazon.com/solutions/lates
 
 - Abra o arquivo pulsar_complete_project.ipynb e executar suas células
 
+### Montagem do container docker para execução no SageMaker MLOps
+
+- Configurar uma sessão de linha de comando AWS
+
+```bash
+aws configure
+aws configure set region us-east-1
+```
+
+- Realizar o build do container
+
+```bash
+cd container/
+./build_and_push.sh random_forest
+```
+
+- Logo, teremos o id container, nesses moldes <aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/random_forest, para criarmos um sagemaker endpoint
+- Agora, já podemos realizar testes locais de execução
+
+```bash
+cd local_test/
+chmod +x *.sh
+./train_local.sh random_forest
+```
+
+- Abra uma nova aba do terminal no mesmo projeto e diretório (`local_test/`) e suba o servidor de inferência
+
+```bash
+./serve_local.sh random_forest
+```
+
+- Na aba original, execute o script de predição automática
+
+```bash
+./predict.sh payload.csv text/csv 
+```
+
+- Pare o container quando estiver satisfeito
+
+```bash
+docker ps -a
+docker kill <CONTAINER_ID>
+```
+
 ### Construa a solução de implantação
 
 - Siga os passos do guia de implementação na seguinte seção <https://docs.aws.amazon.com/pt_br/solutions/latest/mlops-workload-orchestrator/step-1-launch-the-stack.html>
@@ -28,7 +74,7 @@ Projeato no guia de implementação <https://docs.aws.amazon.com/solutions/lates
 - Vamos agora, salvar o nosso modelo, em artefato joblib, para o bucket criado pelo stack set
 
 ```bash
-tar czvf model.tar.gz model_pulsar.joblib
+tar czvf model.tar.gz random-forest-pulsar-model.pkl
 aws s3 cp model.tar.gz s3://<bucket-name>
 ```
 
@@ -37,14 +83,13 @@ aws s3 cp model.tar.gz s3://<bucket-name>
 
 ```json
 {
-"pipeline_type": "byom_realtime_builtin",
-"model_framework": "sklearn",
-"model_framework_version": "1.2-1",
-"model_name": "pulsar",
-"model_artifact_location": "model.tar.gz",
-"data_capture_location": "<bucket_name>/<prefix>",
-"inference_instance": "ml.m5.large",
-"endpoint_name": "pulsar"
+  "pipeline_type": "byom_realtime_custom",
+  "custom_image_uri": "021707296066.dkr.ecr.us-east-1.amazonaws.com/random_forest",
+  "model_name": "pulsar",
+  "model_artifact_location": "model.tar.gz",
+  "data_capture_location": "<bucket-name>/data",
+  "inference_instance": "ml.m5.large",
+  "endpoint_name": "pulsar"
 }
 ```
 
@@ -74,4 +119,4 @@ aws s3 cp model.tar.gz s3://<bucket-name>
 }             
 ```
 
-- Devemos esperar a criação do enpoint para inferencia, basta olharmos no tempalte de cloudformation do tipo `mlops-pipeline-*-byompipelinerealtimebuiltin` terminar
+- Devemos esperar a criação do enpoint para inferencia, basta olharmos no tempalte de cloudformation do tipo `mlops-pipeline-*-byompipelinerealtimecustom` terminar

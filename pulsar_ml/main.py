@@ -1,9 +1,10 @@
 
+import os
+import pickle
 from pulsar_ml.ml.loader import Loader
 from pulsar_ml.ml.pre_processor import PreProcessor
 from pulsar_ml.ml.model import Model
 from pulsar_ml.ml.evaluator import Evaluator
-import joblib
 
 def main():
     loader = Loader()
@@ -41,6 +42,7 @@ def main():
     print("Precision: {}".format(precision))
     print("Recall: {}".format(recall))
 
-    joblib.dump(model,"./model_pulsar.joblib")
+    with open(os.path.join("./", 'random-forest-pulsar-model.pkl'), 'wb') as out:
+        pickle.dump(model, out)
 
 main()
