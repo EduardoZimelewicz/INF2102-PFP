@@ -67,7 +67,7 @@ docker kill <CONTAINER_ID>
 
 - Siga os passos do guia de implementação na seguinte seção <https://docs.aws.amazon.com/pt_br/solutions/latest/mlops-workload-orchestrator/step-1-launch-the-stack.html>
 - Será necessário o login na sua conta AWS na região de us-east-1 North Virginia
-- Preencha os campos de Stack Name com o nome customizado da stack e os campos Required (até o dia 25/11/2023, o email era o único mandatório apenas para notificações de status)
+- Preencha os campos de Stack Name com o nome customizado da stack e os campos Required (até o dia 25/11/2023, o email era o único mandatório apenas para notificações de status) e o nome de um ECR para onde publicamos o container sagemaker `<aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/random_forest`
 *ATENÇÃO* - O custo geral da infrestrutura é de $374.57. Ao final dos testes, por favor, destrua a infraestrutura criada
 - Acompanhe a criação da infraestrutura na aba de Status do CloudFormation
 - Na aba Outputs, haverá a localização para upload dos artefatos do modelo e a url para checagem do status da pipeline
@@ -84,7 +84,7 @@ aws s3 cp model.tar.gz s3://<bucket-name>
 ```json
 {
   "pipeline_type": "byom_realtime_custom",
-  "custom_image_uri": "021707296066.dkr.ecr.us-east-1.amazonaws.com/random_forest",
+  "custom_image_uri": "<aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/random_forest",
   "model_name": "pulsar",
   "model_artifact_location": "model.tar.gz",
   "data_capture_location": "<bucket-name>/data",
