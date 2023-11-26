@@ -81,7 +81,7 @@ tar czvf model.tar.gz random-forest-pulsar-model.pkl
 aws s3 cp model.tar.gz s3://<bucket-name>
 ```
 
-- Para executar a criação da pipeline, podemos executar localmente como um `POST` para o path `/provisionpipeline` na url do output do change set com nome `PipelineOrchestrationLambdaRestApiEndpoint*`. Contudo, é preciso remover a autenticação para os testes seguindo esse post <https://repost.aws/knowledge-center/iam-authentication-api-gateway>
+- Para executar a criação da pipeline, podemos executar localmente como um `POST` para o path `/provisionpipeline` na url do output do change set com nome `PipelineOrchestrationLambdaRestApiEndpoint*`. Contudo, é preciso remover a autenticação para os testes seguindo esse post <https://repost.aws/knowledge-center/iam-authentication-api-gateway> ou até executarmos testes pelo console <https://docs.aws.amazon.com/pt_br/apigateway/latest/developerguide/how-to-test-method.html>
 - E também utilizar o seguinte body no payload de requisição:
 
 ```json
