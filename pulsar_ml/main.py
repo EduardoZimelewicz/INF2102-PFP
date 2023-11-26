@@ -12,7 +12,7 @@ def main():
     ml_model = Model()
     ml_evaluator = Evaluator()
 
-    dataset_csv_path = 'HTRU_2.csv'
+    dataset_csv_path = 'data/HTRU_2.csv'
     attributes = [
         'mean',
         'standard_deviation',

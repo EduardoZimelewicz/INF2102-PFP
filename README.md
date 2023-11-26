@@ -14,10 +14,12 @@ Projeto no guia de implementação <https://docs.aws.amazon.com/solutions/latest
 - Python 3.10 venv
 - Uma conta AWS válida
 - AWS CLI v2
+- Docker
 
 ### Execução do jupyter notebook para criação do modelo e projeto orientado a objetos
 
-- Abra o arquivo pulsar_complete_project.ipynb e executar suas células
+- Abra o arquivo pulsar_complete_project.ipynb e execute suas células
+- Ao final, teremos um modelo para testes online, mas agora, precisamos montá-lo para implantação na AWS
 
 ### Montagem do container docker para execução no SageMaker MLOps
 
@@ -67,13 +69,14 @@ docker kill <CONTAINER_ID>
 
 - Siga os passos do guia de implementação na seguinte seção <https://docs.aws.amazon.com/pt_br/solutions/latest/mlops-workload-orchestrator/step-1-launch-the-stack.html>
 - Será necessário o login na sua conta AWS na região de us-east-1 North Virginia
-- Preencha os campos de Stack Name com o nome customizado da stack e os campos Required (até o dia 25/11/2023, o email era o único mandatório apenas para notificações de status) e o nome de um ECR para onde publicamos o container sagemaker `<aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/random_forest`
+- Preencha os campos de Stack Name com o nome customizado da stack e os campos Required (até o dia 25/11/2023, o email era o único mandatório apenas para notificações de status) e o nome do ECR para onde publicamos o container sagemaker `random_forest`
 *ATENÇÃO* - O custo geral da infrestrutura é de $374.57. Ao final dos testes, por favor, destrua a infraestrutura criada
 - Acompanhe a criação da infraestrutura na aba de Status do CloudFormation
 - Na aba Outputs, haverá a localização para upload dos artefatos do modelo e a url para checagem do status da pipeline
 - Vamos agora, salvar o nosso modelo, em artefato joblib, para o bucket criado pelo stack set
 
 ```bash
+cd test_dir/model
 tar czvf model.tar.gz random-forest-pulsar-model.pkl
 aws s3 cp model.tar.gz s3://<bucket-name>
 ```
@@ -120,3 +123,16 @@ aws s3 cp model.tar.gz s3://<bucket-name>
 ```
 
 - Devemos esperar a criação do enpoint para inferencia, basta olharmos no tempalte de cloudformation do tipo `mlops-pipeline-*-byompipelinerealtimecustom` terminar
+
+- Quando terminada, podemos executar a api de inferência do modelo `/inference` no output do template cloudformation BYOMInferenceLambdaRestApiEndpoint* que logo estará presente na console do AWS API Gateway para testes, com o conteúdo dessa forma, podemos pegar exemplos do dataset original, mas removendo a última coluna (sendo o label da linha, como sendo pulsar ou não):
+
+- A categoria do fenômeno abaixo é `1` para exemplificar
+
+```json
+{
+  "payload": "99.3671875,41.57220208,1.547196967,4.154106043,27.55518395,61.71901588,2.20880796,3.662680136",
+  "content_type": "text/csv"
+}
+```
+
+- Para executarmos o orquestrador quando efetuamos uma mudança, podemos refazer os passos de retreinamento, realizar um novo build da imagem docker, fazer upload do modelo e executar a pipeline mais uma vez. Por exemplo, que tal testar o mesmo modelo com 11 estimadores?
