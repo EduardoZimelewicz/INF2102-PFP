@@ -1,8 +1,8 @@
 # INF2102-PFP
 
-Projeto final de programação para o curso INF2102 - Um orquestrador MLOps de cargas de trabalho para um model de detecção de pulsares
+Projeto final de programação para o curso INF2102 - Um orquestrador MLOps de cargas de trabalho para um modelo de detecção de pulsares
 
-Obs: O treinamento do modelo deve ocorrer locamente, fora da infraestrutura gerenciada
+Obs: O treinamento do modelo deve ocorrer localmente, fora da infraestrutura gerenciada
 
 Tutorial de criação de container para AWS SageMaker MLOps <https://aws.amazon.com/blogs/machine-learning/train-and-host-scikit-learn-models-in-amazon-sagemaker-by-building-a-scikit-docker-container/>
 Projeto exemplo de modelo scikit learn no AWS SageMaker MLOps <https://github.com/aws/amazon-sagemaker-examples/tree/main/advanced_functionality/scikit_bring_your_own>
